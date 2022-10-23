@@ -9,6 +9,8 @@
 #include <errno.h>
 #include <sys/unistd.h>
 
+#include "tiltaNucleus.h"
+
 extern "C" {
     void SystemClock_Config(void);
 
@@ -38,9 +40,16 @@ int main(void) {
     MX_USART4_UART_Init();
     MX_USB_DEVICE_Init();
 
+    huart2.Init.BaudRate = 115200;
+    UART_SetConfig(&huart2);
+
+    TiltaNucleus *tn1 = new TiltaNucleus(&huart2);
+    
+
     while (1) {
-        HAL_Delay(500);
+        HAL_Delay(50);
         printf("Hello World!\n");
+        tn1->setPosition((HAL_GetTick() / 5) % 10000);
     }
 }
 
